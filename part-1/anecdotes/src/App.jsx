@@ -38,7 +38,7 @@ const App = () => {
   }
 
   const handleNext = () => {
-    const randomIndex = Math.floor(Math.random() * 8);
+    const randomIndex = Math.floor(Math.random() * anecdotes.length);
     setSelected(randomIndex);
   }
   
