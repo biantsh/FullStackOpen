@@ -4,9 +4,16 @@ const Button = ({ text, onClick }) => (
   <button onClick={onClick}>{text}</button>
 )
 
-const Anecdote = ({ text, votes }) => (
-  <p>{text}<br />has {votes} votes.</p>
-)
+const Anecdote = ({ title, text, votes, shouldDisplay }) => {
+  if (shouldDisplay) {
+    return (
+      <>
+        <h1>{title}</h1>
+        <p>{text}<br />has {votes} votes.</p>
+      </>
+    )
+  }
+}
 
 const App = () => {
   const anecdotes = [
@@ -34,12 +41,16 @@ const App = () => {
     const randomIndex = Math.floor(Math.random() * 8);
     setSelected(randomIndex);
   }
+  
+  const mostVoted = votes.indexOf(Math.max(...votes));
+  const showMostVoted = votes[mostVoted] > 0;
 
   return (
     <div>
-      <Anecdote text={anecdotes[selected]} votes={votes[selected]} />
+      <Anecdote title="Anecdote of the day" text={anecdotes[selected]} votes={votes[selected]} shouldDisplay={true} />
       <Button text="Vote" onClick={() => handleVote()} />
       <Button text="Next Anecdote" onClick={() => handleNext()} />
+      <Anecdote title="Most voted anecdote" text={anecdotes[mostVoted]} votes={votes[mostVoted]} shouldDisplay={showMostVoted} />
     </div>
   )
 }
