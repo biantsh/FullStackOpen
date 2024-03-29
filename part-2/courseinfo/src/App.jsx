@@ -6,13 +6,22 @@ const Part = ({ part }) => (
   <li>{part.name}: {part.exercises}</li>
 )
 
-const Content = ({ parts }) => (
-  <ul>
-    {parts.map(part =>
-      <Part key={part.id} part={part} />
-    )}
-  </ul>
-)
+const Content = ({ parts }) => {
+  let totalExercises = 0;
+  parts.forEach(part => totalExercises += part.exercises);
+
+  return (
+    <>
+      <b>Course parts:</b>
+      <ul>
+        {parts.map(part =>
+          <Part key={part.id} part={part} />
+        )}
+      </ul>
+      <b>Total of {totalExercises} exercises</b>
+    </>
+  )
+}
 
 const Course = ({ course }) => (
   <>
