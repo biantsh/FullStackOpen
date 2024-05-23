@@ -57,6 +57,19 @@ const App = () => {
     person.name.toLowerCase().includes(nameFilter.toLowerCase())
   );
 
+  const deletePerson = (person) => {
+    return () => {
+      personService
+        .remove(person)
+        .then(response => {
+          setPersons(persons.filter(p => p.id !== person.id));
+        })
+        .catch(error => {
+          console.log('Cancelled deletion.');
+        })
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -79,6 +92,7 @@ const App = () => {
         {personsToShow.map(person =>
           <li key={person.name}>
             {person.name}: {person.number}
+            <button onClick={deletePerson(person)}>Delete</button>
           </li>  
         )}
       </ul>

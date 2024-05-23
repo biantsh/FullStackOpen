@@ -11,5 +11,13 @@ const create = personObject => {
     return request.then(response => response.data);
 }
 
+const remove = person => {
+    if (!window.confirm(`Remove ${person.name}?`)) {
+        return Promise.reject(null);
+    }
 
-export default {getAll, create};
+    const request = axios.delete(`${baseUrl}/${person.id}`);
+    return request.then(response => response.data);
+}
+
+export default {getAll, create, remove};
