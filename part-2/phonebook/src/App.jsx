@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import personService from './services/persons';
+import Notification from './ErrorMessage';
 import SearchFilter from './SearchFilter';
 import PeopleForm from './PeopleForm';
 import PeopleList from './PeopleList';
@@ -9,6 +10,7 @@ const App = () => {
   const [nameFilter, setNameFilter] = useState('');
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     personService
@@ -54,6 +56,11 @@ const App = () => {
         setNewName('');
         setNewNumber('');
       })
+
+    setNotification(`Added number for ${personObject.name}!`);
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
   }
 
   const updatePerson = (id, personObject) => {
@@ -63,6 +70,11 @@ const App = () => {
         setPersons(persons.map(p => p.id === updatedPerson.id ? updatedPerson : p));
         setNewName('');
         setNewNumber('');
+
+        setNotification(`Updated number for ${personObject.name}!`);
+        setTimeout(() => {
+          setNotification(null);
+        }, 3000);
       })
       .catch(error => {
         console.log('Cancel update.')
@@ -75,6 +87,11 @@ const App = () => {
         .remove(person)
         .then(response => {
           setPersons(persons.filter(p => p.id !== person.id));
+
+          setNotification(`Deleted number for ${person.name}!`);
+          setTimeout(() => {
+            setNotification(null);
+          }, 3000);
         })
         .catch(error => {
           console.log('Cancelled deletion.');
@@ -89,11 +106,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <SearchFilter value={nameFilter} onChange={handleFilterChange}></SearchFilter>
+      <Notification message={notification} />
+      <SearchFilter value={nameFilter} onChange={handleFilterChange} />
       <PeopleForm newName={newName} newNumber={newNumber} 
-        onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} >
-      </PeopleForm>
-      <PeopleList personsToShow={personsToShow} onDelete={deletePerson}></PeopleList>
+        onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} />
+      <PeopleList personsToShow={personsToShow} onDelete={deletePerson} />
     </div>
   )
 }
