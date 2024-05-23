@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import personService from './services/persons';
+import SearchFilter from './SearchFilter';
+import PeopleForm from './PeopleForm';
+import PeopleList from './PeopleList';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -40,14 +43,7 @@ const App = () => {
     }
 
     if (existingPersons.length > 0) {
-      personService
-        .update(existingPersons[0].id, personObject)
-        .then(updatedPerson => {
-          setPersons(persons.map(p => p.id === updatedPerson.id ? updatedPerson : p))
-        })
-        .catch(error => {
-          console.log('Cancel update.')
-        })
+      updatePerson(existingPersons[0].id, personObject);
       return;
     }
 
@@ -60,9 +56,18 @@ const App = () => {
       })
   }
 
-  const personsToShow = persons.filter(person =>
-    person.name.toLowerCase().includes(nameFilter.toLowerCase())
-  );
+  const updatePerson = (id, personObject) => {
+    personService
+      .update(id, personObject)
+      .then(updatedPerson => {
+        setPersons(persons.map(p => p.id === updatedPerson.id ? updatedPerson : p));
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(error => {
+        console.log('Cancel update.')
+      });
+  }
 
   const deletePerson = (person) => {
     return () => {
@@ -77,32 +82,18 @@ const App = () => {
     }
   }
 
+  const personsToShow = persons.filter(person =>
+    person.name.toLowerCase().includes(nameFilter.toLowerCase())
+  );
+
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        Filter shown with: <input value={nameFilter} onChange={handleFilterChange} />
-      </div>
-      <form onSubmit={addPerson} >
-        <div>
-          Name: <input value={newName} onChange={handleNameChange} />
-        </div>
-        <div>
-          Number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">Add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {personsToShow.map(person =>
-          <li key={person.name}>
-            {person.name}: {person.number}
-            <button onClick={deletePerson(person)}>Delete</button>
-          </li>  
-        )}
-      </ul>
+      <SearchFilter value={nameFilter} onChange={handleFilterChange}></SearchFilter>
+      <PeopleForm newName={newName} newNumber={newNumber} 
+        onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} >
+      </PeopleForm>
+      <PeopleList personsToShow={personsToShow} onDelete={deletePerson}></PeopleList>
     </div>
   )
 }
