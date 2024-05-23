@@ -6,8 +6,17 @@ const getAll = () => {
     return request.then(response => response.data);
 }
 
-const create = personObject => {
-    const request = axios.post(baseUrl, personObject);
+const create = person => {
+    const request = axios.post(baseUrl, person);
+    return request.then(response => response.data);
+}
+
+const update = (id, person) => {
+    if (!window.confirm(`${person.name} is already added, replace the old number?`)) {
+        return Promise.reject(null);
+    }
+
+    const request = axios.put(`${baseUrl}/${id}`, person);
     return request.then(response => response.data);
 }
 
@@ -20,4 +29,4 @@ const remove = person => {
     return request.then(response => response.data);
 }
 
-export default {getAll, create, remove};
+export default {getAll, create, update, remove};

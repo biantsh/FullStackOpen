@@ -34,14 +34,21 @@ const App = () => {
     const existingPersons = persons.filter(person => 
       person.name === newName);
 
-    if (existingPersons.length > 0) {
-      alert(`${newName} is already added to the phonebook!`);
-      return;
-    }
-
     const personObject = {
       name: newName,
       number: newNumber
+    }
+
+    if (existingPersons.length > 0) {
+      personService
+        .update(existingPersons[0].id, personObject)
+        .then(updatedPerson => {
+          setPersons(persons.map(p => p.id === updatedPerson.id ? updatedPerson : p))
+        })
+        .catch(error => {
+          console.log('Cancel update.')
+        })
+      return;
     }
 
     personService
