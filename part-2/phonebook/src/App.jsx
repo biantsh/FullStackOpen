@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import personService from './services/persons';
-import Notification from './ErrorMessage';
+import Notification from './Notification';
+import ErrorMessage from './ErrorMessage';
 import SearchFilter from './SearchFilter';
 import PeopleForm from './PeopleForm';
 import PeopleList from './PeopleList';
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [notification, setNotification] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService
@@ -64,6 +66,10 @@ const App = () => {
   }
 
   const updatePerson = (id, personObject) => {
+    if (!window.confirm(`${personObject.name} is already added, replace the old number?`)) {
+      return;
+    }
+
     personService
       .update(id, personObject)
       .then(updatedPerson => {
@@ -77,7 +83,12 @@ const App = () => {
         }, 3000);
       })
       .catch(error => {
-        console.log('Cancel update.')
+        setErrorMessage(`Information for ${personObject.name} has already been removed from the server.`)
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 3000);
+
+        setPersons(persons.filter(p => p.id !== id));
       });
   }
 
@@ -106,6 +117,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <ErrorMessage message={errorMessage} />
       <Notification message={notification} />
       <SearchFilter value={nameFilter} onChange={handleFilterChange} />
       <PeopleForm newName={newName} newNumber={newNumber} 

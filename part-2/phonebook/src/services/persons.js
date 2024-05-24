@@ -12,10 +12,6 @@ const create = person => {
 }
 
 const update = (id, person) => {
-    if (!window.confirm(`${person.name} is already added, replace the old number?`)) {
-        return Promise.reject(null);
-    }
-
     const request = axios.put(`${baseUrl}/${id}`, person);
     return request.then(response => response.data);
 }
