@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import personService from './services/persons';
-import Notification from './Notification';
-import ErrorMessage from './ErrorMessage';
-import SearchFilter from './SearchFilter';
-import PeopleForm from './PeopleForm';
-import PeopleList from './PeopleList';
+import Notification from './components/Notification';
+import SearchFilter from './components/SearchFilter';
+import PersonForm from './components/PersonForm';
+import PersonList from './components/PersonList';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,7 +11,6 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [notification, setNotification] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     personService
@@ -23,19 +21,7 @@ const App = () => {
   }, 
   []);
 
-  const handleFilterChange = (event) => {
-    setNameFilter(event.target.value);
-  }
-
-  const handleNameChange = (event) => {
-    setNewName(event.target.value);
-  }
-
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value);
-  }
-
-  const addPerson = (event) => {
+  const addPerson = event => {
     event.preventDefault();
 
     const existingPersons = persons.filter(person => 
@@ -59,10 +45,7 @@ const App = () => {
         setNewNumber('');
       })
 
-    setNotification(`Added number for ${personObject.name}!`);
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
+    notify(`Added number for ${personObject.name}!`);
   }
 
   const updatePerson = (id, personObject) => {
@@ -77,37 +60,46 @@ const App = () => {
         setNewName('');
         setNewNumber('');
 
-        setNotification(`Updated number for ${personObject.name}!`);
-        setTimeout(() => {
-          setNotification(null);
-        }, 3000);
+        notify(`Updated number for ${personObject.name}!`);
       })
       .catch(error => {
-        setErrorMessage(`Information for ${personObject.name} has already been removed from the server.`)
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 3000);
-
         setPersons(persons.filter(p => p.id !== id));
+
+        notify(`Error: Information for ${personObject.name} has already been removed from the server.`);
       });
   }
 
-  const deletePerson = (person) => {
-    return () => {
-      personService
-        .remove(person)
-        .then(response => {
-          setPersons(persons.filter(p => p.id !== person.id));
-
-          setNotification(`Deleted number for ${person.name}!`);
-          setTimeout(() => {
-            setNotification(null);
-          }, 3000);
-        })
-        .catch(error => {
-          console.log('Cancelled deletion.');
-        })
+  const deletePerson = person => {
+    if (!window.confirm(`Remove ${person.name}?`)) {
+      return;
     }
+
+    personService
+      .remove(person)
+      .then(response => {
+        setPersons(persons.filter(p => p.id !== person.id));
+        
+        notify(`Deleted number for ${person.name}!`);
+      })
+  }
+
+  const handleFilterChange = event => {
+    setNameFilter(event.target.value);
+  }
+
+  const handleNameChange = event => {
+    setNewName(event.target.value);
+  }
+
+  const handleNumberChange = event => {
+    setNewNumber(event.target.value);
+  }
+
+  const notify = message => {
+    setNotification(message);
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
   }
 
   const personsToShow = persons.filter(person =>
@@ -117,12 +109,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <ErrorMessage message={errorMessage} />
       <Notification message={notification} />
       <SearchFilter value={nameFilter} onChange={handleFilterChange} />
-      <PeopleForm newName={newName} newNumber={newNumber} 
+      <PersonForm newName={newName} newNumber={newNumber} 
         onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} />
-      <PeopleList personsToShow={personsToShow} onDelete={deletePerson} />
+      <PersonList personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
   )
 }

@@ -17,10 +17,6 @@ const update = (id, person) => {
 }
 
 const remove = person => {
-    if (!window.confirm(`Remove ${person.name}?`)) {
-        return Promise.reject(null);
-    }
-
     const request = axios.delete(`${baseUrl}/${person.id}`);
     return request.then(response => response.data);
 }
