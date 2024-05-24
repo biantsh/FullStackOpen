@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
-import countryService from './services/countries';
+import countryService from '../services/countries';
 
-const Results = ({ resultsToShow }) => {
+const Results = ({ resultsToShow, selectCountry }) => {
   const [countryInfo, setCountryInfo] = useState(null);
 
   useEffect(() => {
@@ -21,15 +21,20 @@ const Results = ({ resultsToShow }) => {
     return (
     <div>Too many matches, specify another filter.</div>
     )
-  } else if (resultsToShow.length > 1) {
+  } 
+  else if (resultsToShow.length > 1) {
     return (
       <ul>
         {resultsToShow.map(result =>
-          <li key={result}>{result}</li>
+          <li key={result}>
+            {result}
+            <button onClick={() => selectCountry(result)}>Show</button>
+          </li>
         )}
       </ul>      
     )
-  } else if (resultsToShow.length === 1 && countryInfo) {
+  } 
+  else if (resultsToShow.length === 1 && countryInfo) {
     return (
       <>
         <h1>{countryInfo.name.common}</h1>

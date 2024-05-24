@@ -26,6 +26,10 @@ function App() {
       });
   }, [filterTextDebounced]);
 
+  const selectCountry = countryName => {
+    setFilterText(countryName);
+  }
+
   const handleFilterChange = event => {
     const searchValue = event.target.value;
     setFilterText(searchValue);
@@ -34,7 +38,7 @@ function App() {
   return (
     <>
       <SearchFilter filterText={filterText} onChange={handleFilterChange} />
-      <Results resultsToShow={matches} />
+      <Results resultsToShow={matches} selectCountry={selectCountry} />
     </>
   )
 }
