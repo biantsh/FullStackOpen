@@ -1,16 +1,25 @@
 import { useState, useEffect } from 'react';
 
 import countryService from '../services/countries';
+import weatherService from '../services/weather';
+import WeatherInfo from './WeatherInfo';
 
 const Results = ({ resultsToShow, selectCountry }) => {
   const [countryInfo, setCountryInfo] = useState(null);
+  const [weatherInfo, setWeatherInfo] = useState(null);
 
   useEffect(() => {
     if (resultsToShow.length === 1) {
       countryService
         .getCountryInfo(resultsToShow[0])
-        .then(info => {
-            setCountryInfo(info);
+        .then(cInfo => {
+            setCountryInfo(cInfo);
+
+            weatherService
+              .getWeatherInfo(cInfo.capital)
+              .then(wInfo => {
+                setWeatherInfo(wInfo);
+            });
         })
     } else {
         setCountryInfo(null);
@@ -34,7 +43,7 @@ const Results = ({ resultsToShow, selectCountry }) => {
       </ul>      
     )
   } 
-  else if (resultsToShow.length === 1 && countryInfo) {
+  else if (resultsToShow.length === 1 && countryInfo && weatherInfo) {
     return (
       <>
         <h1>{countryInfo.name.common}</h1>
@@ -48,6 +57,8 @@ const Results = ({ resultsToShow, selectCountry }) => {
         </ul>
 
         <img src={countryInfo.flags.png} alt={countryInfo.flags.alt}></img>
+
+        <WeatherInfo capitalName={countryInfo.capital} weatherInfo={weatherInfo} />
       </>
     )
   }
