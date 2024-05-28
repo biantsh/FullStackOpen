@@ -12,8 +12,8 @@ mongoose.set('strictQuery', false);
 mongoose.connect(url);
 
 const personSchema = mongoose.Schema({
-    userName: String,
-    userNumber: String
+    name: String,
+    number: String
 });
 
 const Person = mongoose.model('Person', personSchema);
@@ -23,14 +23,14 @@ if (process.argv.length === 3) {
         console.log('Phonebook:');
 
         result.forEach(person => {
-            console.log(`${person.userName} ${person.userNumber}`);
+            console.log(`${person.name} ${person.number}`);
         });
 
         mongoose.connection.close();
     });
 } else {
-    const [userName, userNumber] = userDetails;
-    const person = new Person({ userName, userNumber });
+    const [name, number] = userDetails;
+    const person = new Person({ name, number });
 
     person.save().then(result => {
         console.log('Person saved!');
