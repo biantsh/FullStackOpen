@@ -60,6 +60,16 @@ app.post('/api/persons', (request, response) => {
     })
 });
 
+app.delete('/api/persons/:id', (request, response) => {
+    Person.findByIdAndDelete(request.params.id)
+        .then(result => {
+            response.status(204).end();
+        })
+        .catch(error => {
+            console.log('Error deleting person from the database:', error.message);
+        });
+});
+
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
