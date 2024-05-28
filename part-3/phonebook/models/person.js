@@ -1,3 +1,4 @@
+const utils = require('../utils');
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 
@@ -15,7 +16,13 @@ const personSchema = mongoose.Schema({
         type: String,
         minLength: 3
     },
-    number: String
+    number: {
+        type: String,
+        minLength: 8,
+        validate: {
+            validator: utils.isValidNumber
+        }
+    }
 });
 
 personSchema.set('toJSON', {

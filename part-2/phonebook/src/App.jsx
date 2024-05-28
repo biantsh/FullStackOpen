@@ -43,9 +43,12 @@ const App = () => {
         setPersons(persons.concat(newPerson));
         setNewName('');
         setNewNumber('');
-      })
 
-    notify(`Added number for ${personObject.name}!`);
+        notify(`Added number for ${personObject.name}!`);
+      })
+      .catch(error => {
+        notify(`Error: ${error.response.data.error}`);
+      });
   }
 
   const updatePerson = (id, personObject) => {
@@ -63,9 +66,13 @@ const App = () => {
         notify(`Updated number for ${personObject.name}!`);
       })
       .catch(error => {
-        setPersons(persons.filter(p => p.id !== id));
+        if (error.name === 'TypeError') {
+          setPersons(persons.filter(p => p.id !== id));
 
-        notify(`Error: Information for ${personObject.name} has already been removed from the server.`);
+          notify(`Error: Information for ${personObject.name} has already been removed from the server.`);
+        } else {
+          notify(`Error: ${error.response.data.error}`);
+        }
       });
   }
 
