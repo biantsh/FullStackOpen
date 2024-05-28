@@ -21,6 +21,17 @@ app.use(morgan((tokens, request, response) => {
     ].join(' ');
 }));
 
+app.get('/info', (request, response, next) => {
+    Person.find({})
+        .then(persons => {
+            const date = new Date().toString();
+            response.send(`<p>Phonebook has info for ${persons.length} people</p><p>${date}</p>`);
+        })
+        .catch(error => {
+            next(error);
+        })
+});
+
 app.get('/api/persons', (request, response, next) => {
     Person.find({})
         .then(persons => {
