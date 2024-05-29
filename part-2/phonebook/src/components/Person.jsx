@@ -6,7 +6,7 @@ const Person = ({ personObject, deletePerson }) => {
         <button onClick={() => deletePerson(personObject)}>Delete</button>
       </li>
     </>
-  )
-}
+  );
+};
 
 export default Person;

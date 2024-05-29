@@ -8,9 +8,9 @@ const PersonList = ({ personsToShow, deletePerson }) => {
         {personsToShow.map(person =>
           <Person key={person.id} personObject={person} deletePerson={deletePerson}></Person>
         )}
-      </ul>    
+      </ul>
     </>
-  )
-}
+  );
+};
 
 export default PersonList;

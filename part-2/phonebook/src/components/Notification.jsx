@@ -6,7 +6,7 @@ const infoStyle = {
   marginBottom: '15px',
   fontSize: '25px',
   padding: '10px'
-}
+};
 
 const errorStyle = {
   color: 'red',
@@ -16,21 +16,21 @@ const errorStyle = {
   marginBottom: '15px',
   fontSize: '25px',
   padding: '10px'
-}
+};
 
 const Notification = ({ message }) => {
   if (message === null) {
     return null;
   }
 
-  const style = message.toLowerCase().includes('error') 
-  ? errorStyle : infoStyle;
+  const style = message.toLowerCase().includes('error')
+    ? errorStyle : infoStyle;
 
   return (
     <div style={style}>
       {message}
     </div>
-  )
-}
+  );
+};
 
 export default Notification;

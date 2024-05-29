@@ -17,20 +17,20 @@ const App = () => {
       .getAll()
       .then(persons => {
         setPersons(persons);
-      })
-  }, 
+      });
+  },
   []);
 
   const addPerson = event => {
     event.preventDefault();
 
-    const existingPersons = persons.filter(person => 
+    const existingPersons = persons.filter(person =>
       person.name === newName);
 
     const personObject = {
       name: newName,
       number: newNumber
-    }
+    };
 
     if (existingPersons.length > 0) {
       updatePerson(existingPersons[0].id, personObject);
@@ -49,7 +49,7 @@ const App = () => {
       .catch(error => {
         notify(`Error: ${error.response.data.error}`);
       });
-  }
+  };
 
   const updatePerson = (id, personObject) => {
     if (!window.confirm(`${personObject.name} is already added, replace the old number?`)) {
@@ -74,7 +74,7 @@ const App = () => {
           notify(`Error: ${error.response.data.error}`);
         }
       });
-  }
+  };
 
   const deletePerson = person => {
     if (!window.confirm(`Remove ${person.name}?`)) {
@@ -83,31 +83,31 @@ const App = () => {
 
     personService
       .remove(person)
-      .then(response => {
+      .then(() => {
         setPersons(persons.filter(p => p.id !== person.id));
-        
+
         notify(`Deleted number for ${person.name}!`);
-      })
-  }
+      });
+  };
 
   const handleFilterChange = event => {
     setNameFilter(event.target.value);
-  }
+  };
 
   const handleNameChange = event => {
     setNewName(event.target.value);
-  }
+  };
 
   const handleNumberChange = event => {
     setNewNumber(event.target.value);
-  }
+  };
 
   const notify = message => {
     setNotification(message);
     setTimeout(() => {
       setNotification(null);
     }, 3000);
-  }
+  };
 
   const personsToShow = persons.filter(person =>
     person.name.toLowerCase().includes(nameFilter.toLowerCase())
@@ -118,11 +118,11 @@ const App = () => {
       <h2>Phonebook</h2>
       <Notification message={notification} />
       <SearchFilter value={nameFilter} onChange={handleFilterChange} />
-      <PersonForm newName={newName} newNumber={newNumber} 
+      <PersonForm newName={newName} newNumber={newNumber}
         onSubmit={addPerson} onNameChange={handleNameChange} onNumberChange={handleNumberChange} />
       <PersonList personsToShow={personsToShow} deletePerson={deletePerson} />
     </div>
-  )
-}
+  );
+};
 
 export default App;
